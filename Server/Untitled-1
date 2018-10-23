@@ -1,0 +1,79 @@
+app.get('/login', urlencodedParser, function(req,res){
+
+  var email = req.body.email;
+  var password = req.body.password;
+
+  console.log("\n\nDATOS OBTENIDOS:\n");
+  console.log("Email: " + email + "\n" + "Password: " + password + "\n");
+
+  con.query('SELECT * FROM usuarios WHERE email = ?',[email], function (error, results, fields) {
+  if (error) {
+    res.send({
+      "code":400,
+      "failed":error
+    })
+  }else{
+    if(results.length > 0){
+      if(results[0].password == password){
+        res.send({
+          code: 200,
+          success: "Logeo exitoso."
+          });
+      }
+      else{
+        res.send({
+          code: 204,
+          success: "Usuario y/o password incorrectos."
+          });
+      }
+    }
+    else{
+      res.send({
+        code: 204,
+        success: "El email ingresado no existe o es incorrecto."
+        });
+    }
+  }
+  });
+});
+
+
+app.get('/dashboard', urlencodedParser, function(req,res){
+
+  // var token = 0;
+  // var userId = req.body.idDispositivo;
+  var idDispositivo = req.body.idDispositivo;
+
+  console.log("\n\nDATOS OBTENIDOS:\n");
+  console.log("Email: " + email + "\n" + "Password: " + password + "\n");
+
+  con.query('SELECT * FROM dispositivos WHERE id = ?',[idDispositivo], function (error, results, fields) {
+  if (error) {
+    res.send({
+      "code":400,
+      "failed":error
+    })
+  }else{
+    if(results.length > 0){
+      if(results[0].id == idDipositivo){
+        res.send({
+          code: 200,
+          success: results[0].id
+          });
+      }
+      else{
+        res.send({
+          code: 204,
+          success: "Usuario y/o password incorrectos."
+          });
+      }
+    }
+    else{
+      res.send({
+        code: 204,
+        success: "El email ingresado no existe o es incorrecto."
+        });
+    }
+  }
+  });
+});
