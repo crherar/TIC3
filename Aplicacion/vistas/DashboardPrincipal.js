@@ -3,6 +3,7 @@ import { FlatList, View, Text, Image, TouchableOpacity } from 'react-native';
 import { ListItem, List, Header} from 'react-native-elements';
 import { TextInput } from 'react-native-gesture-handler';
 import styles from '../styles/styles/';
+import { getToken } from './Utility';
 
 class DashboardPrincipal extends React.Component {
 
@@ -27,9 +28,10 @@ class DashboardPrincipal extends React.Component {
         const response = await fetch("http://192.168.100.5:3000/consultarDispositivos", {
             method: 'POST',
             headers: {
-                'Content-Type':'application/json'  
+                'Content-Type':'application/json',
+                'authorization': 'Bearer ' + authorization,
             },
-            body: JSON.stringify({email: email, authorization: authorization})
+            body: JSON.stringify({email: email})
         });
         const json = await response.json();
         console.log(json);
