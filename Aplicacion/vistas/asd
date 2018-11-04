@@ -1,0 +1,20 @@
+
+
+                <TextInput 
+                style = {styles.input}
+                underlineColorAndroid = "transparent"
+                placeholder = "Cantidad de huevos"
+                //placeholderTextColor = "#9a73ef"
+                autoCapitalize = "none"
+                onChangeText = {this.cantHuevos}
+                //textoError = {this.state.apellidoError}
+                />
+
+
+<TextInput 
+                style = {styles.input}
+                underlineColorAndroid = "transparent"
+                placeholder = "Nombre"
+                //placeholderTextColor = "#9a73ef"
+                autoCapitalize = "none"
+                />

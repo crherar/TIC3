@@ -1,9 +1,14 @@
 import React from 'react';
 import { FlatList, View, Text, Image, TouchableOpacity } from 'react-native';
-import { ListItem, List, Header} from 'react-native-elements';
-import { TextInput } from 'react-native-gesture-handler';
+import { ListItem, List, Header } from 'react-native-elements';
+
+//import { TextInput } from 'react-native-gesture-handler';
 import styles from '../styles/styles/';
-import { getToken } from './Utility';
+// import { getToken } from './Utility';
+//import { Button } from 'react-native-elements';
+
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class DashboardPrincipal extends React.Component {
 
@@ -67,11 +72,14 @@ class DashboardPrincipal extends React.Component {
     render() {
 
         return (
+
+            <View>
             <List>
                 <FlatList
                     data={this.state.data}
                     renderItem={({item}) => (
                         <ListItem
+                            onPress={()=>this.props.navigation.navigate('AgregarIncubacion')}
                             roundAvatar
                             title={item.nombre}
                             subtitle={`TEMP:${item.temp} \t HUM:${item.hum} \t CANT:${item.cantidadHuevos} `}
@@ -80,7 +88,43 @@ class DashboardPrincipal extends React.Component {
                     //ItemSeparatorComponent={this.renderSeparator}
                     ListHeaderComponent={this.renderHeader}
                 />
+
+
+
             </List>
+
+            {/* <Icon
+            raised
+            name='plus'
+            type='antdesign'
+            color='green'
+            size={30}
+            onPress={()=>this.props.navigation.navigate('AgregarIncubacion')} 
+            /> */}
+
+  
+            <Button
+            //style={{ alignItems: 'center', justifyContent:'center' }}
+            title="+ INCUBACIÓN"
+            //loading
+            //loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
+            titleStyle={{ fontWeight: "700" }}
+            buttonStyle={{
+            marginTop:20,
+            justifyContent:'center',
+            backgroundColor: "green",
+            alignItems:"center",
+            width: 200,
+            height: 45,
+            borderColor: "transparent",
+            borderWidth: 0,
+            borderRadius: 5
+            }}
+            containerStyle={{ marginTop: 20 }}
+            onPress={()=>this.props.navigation.navigate('AgregarIncubacion')}
+            />
+            </View>
+
         ); 
     }   
 }
