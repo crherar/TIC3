@@ -62,9 +62,9 @@ class DashboardPrincipal extends React.Component {
         return (
             <Header
             backgroundColor='green'
-                leftComponent={{ icon: 'menu', color: '#fff' }}
+                //leftComponent={{ icon: 'menu', color: '#fff' }}
                 centerComponent={{ text: `${this.state.email}`, style: { color: '#fff' } }}
-                rightComponent={{ icon: 'home', color: '#fff' }}
+                //rightComponent={{ icon: 'home', color: '#fff' }}
             />
         );     
     }
@@ -102,27 +102,30 @@ class DashboardPrincipal extends React.Component {
             onPress={()=>this.props.navigation.navigate('AgregarIncubacion')} 
             /> */}
 
-  
-            <Button
-            //style={{ alignItems: 'center', justifyContent:'center' }}
-            title="+ INCUBACIÓN"
-            //loading
-            //loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
-            titleStyle={{ fontWeight: "700" }}
-            buttonStyle={{
-            marginTop:20,
-            justifyContent:'center',
-            backgroundColor: "green",
-            alignItems:"center",
-            width: 200,
-            height: 45,
-            borderColor: "transparent",
-            borderWidth: 0,
-            borderRadius: 5
-            }}
-            containerStyle={{ marginTop: 20 }}
-            onPress={()=>this.props.navigation.navigate('AgregarIncubacion')}
-            />
+            <View style={{alignItems:'center'}}>
+                <Button
+                //style={{ alignItems: 'center', justifyContent:'center' }}
+                title="+ INCUBACIÓN"
+                //loading
+                //loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
+                titleStyle={{ fontWeight: "700" }}
+                buttonStyle={{
+                marginTop:20,
+                justifyContent:'center',
+                backgroundColor: "green",
+                alignItems:"center",
+                width: 200,
+                height: 45,
+                borderColor: "transparent",
+                borderWidth: 0,
+                borderRadius: 5
+                }}
+                containerStyle={{ marginTop: 20 }}
+                onPress={()=>this.props.navigation.navigate('AgregarIncubacion')}
+                />
+
+            </View>
+            
             </View>
 
         ); 

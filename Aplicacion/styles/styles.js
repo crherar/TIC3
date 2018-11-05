@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default stylesExterno = StyleSheet.create({
+export default styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection:'column',
@@ -20,8 +20,11 @@ export default stylesExterno = StyleSheet.create({
         marginLeft:30,
         borderColor: 'rgb(0, 153, 51)',
         borderWidth: 2,
-        borderRadius:0,
+        borderRadius:20,
         paddingHorizontal: 10,
+    },
+    inputError: {
+        borderColor:'red'
     },
     botonLogin: {
         alignItems:'center',
@@ -31,7 +34,7 @@ export default stylesExterno = StyleSheet.create({
         paddingTop:10,
         paddingBottom:10,
         backgroundColor: 'rgb(0, 153, 51)',
-        borderRadius:0,
+        borderRadius:5,
     },
     textoBotonLogin: {
         color:'white',

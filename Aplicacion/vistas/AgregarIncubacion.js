@@ -66,6 +66,8 @@ class AgregarIncubacion extends React.Component {
 
     onPressAgregarIncubacion() {
 
+        return;
+        
         const{nombre, cantHuevos} = this.state; // destructuracion de objetos
 
         var datos = {'nombre': nombre, 'cantHuevos': cantHuevos}
@@ -97,10 +99,13 @@ class AgregarIncubacion extends React.Component {
 
         <View style = {styles.container}>
 
+            <View style={{alignItems:'center'}}>
+                <Text style={{ fontSize:30, color:'green', fontWeight:'bold',}}> Agregar Incubación </Text>
+            </View>
                 <TextInput 
                 style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Nombre"
+                placeholder = ""
                 //placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 />
@@ -108,7 +113,7 @@ class AgregarIncubacion extends React.Component {
                 <TextInput 
                 style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Cantidad de huevos"
+                placeholder = ""
                 //placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 onChangeText = {this.cantHuevos}
@@ -118,7 +123,17 @@ class AgregarIncubacion extends React.Component {
                 <TextInput 
                 style = {styles.input}
                 underlineColorAndroid = "transparent"
-                placeholder = "Cantidad de huevos"
+                placeholder = ""
+                //placeholderTextColor = "#9a73ef"
+                autoCapitalize = "none"
+                onChangeText = {this.cantHuevos}
+                //textoError = {this.state.apellidoError}
+                />
+
+                <TextInput 
+                style = {styles.input}
+                underlineColorAndroid = "transparent"
+                placeholder = ""
                 //placeholderTextColor = "#9a73ef"
                 autoCapitalize = "none"
                 onChangeText = {this.cantHuevos}
@@ -140,7 +155,7 @@ class AgregarIncubacion extends React.Component {
                 />
 
                 <View style={{alignItems:'center'}}>
-                <Text style={{color:'green', fontSize:20}}> {this.state.fechaElegida}</Text>
+                <Text style={{color:'green', fontSize:20, marginTop:5, marginBottom:5}}> {this.state.fechaElegida}</Text>
                 </View>
 
                 <View style={{alignItems:'center'}}>
@@ -170,7 +185,7 @@ const styles = StyleSheet.create({
         //  marginLeft:30,
         borderColor: 'rgb(0, 153, 51)',
         borderWidth: 2,
-        borderRadius:0,
+        borderRadius:20,
         paddingHorizontal: 10,
         // textAlignVertical: 'top'
     },
@@ -203,7 +218,7 @@ const styles = StyleSheet.create({
         paddingLeft:30,
         paddingRight:30,
         backgroundColor: 'green',
-        borderRadius:0,
+        borderRadius:5,
     },
 });
 

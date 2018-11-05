@@ -18,9 +18,9 @@ export default class App extends React.Component {
 
 const AppStackNavigator = createStackNavigator({
 
+    Login: Login,
     AgregarIncubacion: AgregarIncubacion,
     Calendario: Calendario,
-    Login: Login,
     Dashboard: DashboardPrincipal,
     Registro: RegistroUsuarios,
     Gestion: GestionDispositivos,
