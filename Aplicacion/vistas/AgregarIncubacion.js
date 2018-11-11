@@ -7,15 +7,15 @@ import {
     StyleSheet
 } from 'react-native';
 
-import { 
-    FormLabel, 
-    FormInput, 
-    FormValidationMessage 
-} from 'react-native-elements'
-
 import { TextInput } from 'react-native-gesture-handler';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import moment from 'moment'
+import DropdownMenu from 'react-native-dropdown-menu';
+import { Dropdown } from 'react-native-material-dropdown';
+
+
+import moment from 'moment';
+console.disableYellowBox = true;
+
 
 //import stylesExterno from '../styles/styles/';
 
@@ -26,12 +26,15 @@ class AgregarIncubacion extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            idDispositivo:'',
             nombre:'',
             cantHuevos:'',
             esVisible: false,
-            fechaElegida:'',
+            fechaInicio:'',
+            tipoAve:''
         };
     }
+
 
     obtenerNombre = (inputNombre) => {
         this.setState({nombre:inputNombre
@@ -47,7 +50,7 @@ class AgregarIncubacion extends React.Component {
     setearCalendario = (fecha) => {
         this.setState({
             esVisible: false,
-            fechaElegida: moment(fecha).format('MMMM, Do YYYY HH:mm')
+            fechaInicio: fecha //moment(fecha).format('YYYY-MM-DD HH:mm')
         });
     } 
 
@@ -66,11 +69,15 @@ class AgregarIncubacion extends React.Component {
 
     onPressAgregarIncubacion() {
 
-        return;
-        
-        const{nombre, cantHuevos} = this.state; // destructuracion de objetos
+        const{idDispositivo, nombre, cantHuevos, fechaInicio, tipoAve } = this.state; // destructuracion de objetos
 
-        var datos = {'nombre': nombre, 'cantHuevos': cantHuevos}
+        var datos = {
+            idDispositivo: idDispositivo, 
+            nombre: nombre, 
+            cantHuevos: cantHuevos, 
+            tipoAve: tipoAve,
+            fechaInicio: fechaInicio
+        }
 
         console.log(datos);
         
@@ -95,54 +102,68 @@ class AgregarIncubacion extends React.Component {
     }
 
     render() {
-        return (
 
+       // var data = [["Pollos", "Pavos", "Patos"]];
+
+        let data = [{
+            value: 'Pollos',
+          }, {
+            value: 'Pavos',
+          }, {
+            value: 'Patos',
+          }];
+
+        return (
+            
         <View style = {styles.container}>
 
             <View style={{alignItems:'center'}}>
                 <Text style={{ fontSize:30, color:'green', fontWeight:'bold',}}> Agregar Incubación </Text>
             </View>
+                <Text style={{}}> Ingrese el ID de la incubadora </Text>
                 <TextInput 
                 style = {styles.input}
                 underlineColorAndroid = "transparent"
                 placeholder = ""
-                //placeholderTextColor = "#9a73ef"
+                placeholderTextColor = "black"
+                onChangeText = {(texto) => this.setState({idDispositivo:texto})}
                 autoCapitalize = "none"
                 />
-
+                <Text style={{}}> Nombre de la incubación </Text>
                 <TextInput 
                 style = {styles.input}
                 underlineColorAndroid = "transparent"
                 placeholder = ""
-                //placeholderTextColor = "#9a73ef"
+                placeholderTextColor = "black"
                 autoCapitalize = "none"
-                onChangeText = {this.cantHuevos}
+                onChangeText = {(texto) => this.setState({nombre:texto})}
                 //textoError = {this.state.apellidoError}
                 />
 
+                <Text style={{}}> Cantidad de huevos </Text>
                 <TextInput 
                 style = {styles.input}
                 underlineColorAndroid = "transparent"
                 placeholder = ""
-                //placeholderTextColor = "#9a73ef"
+                placeholderTextColor = "black"
                 autoCapitalize = "none"
-                onChangeText = {this.cantHuevos}
+                onChangeText = {(texto) => this.setState({cantHuevos:texto})}
                 //textoError = {this.state.apellidoError}
                 />
 
-                <TextInput 
-                style = {styles.input}
-                underlineColorAndroid = "transparent"
-                placeholder = ""
-                //placeholderTextColor = "#9a73ef"
-                autoCapitalize = "none"
-                onChangeText = {this.cantHuevos}
-                //textoError = {this.state.apellidoError}
-                />
+                <Text style={{}}> Seleccione el tipo de ave a incubar </Text>
 
+                <Dropdown 
+                    baseColor = {"green"}
+                    onChangeText = {(opcion) =>  this.setState({tipoAve:opcion})}
+                    data={data}
+                    containerStyle = {styles.inputTipoAve}
+                />
+                                    
+                <Text style={{}}> Seleccione fecha inicio de la incubación </Text>               
                 <View style={{alignItems:'center'}}>
-                <TouchableOpacity style={styles.button} onPress={this.mostrarCalendario}>
-                    <Text style={styles.text}> Seleccionar fecha inicio </Text>
+                <TouchableOpacity style={styles.input} onPress={this.mostrarCalendario} value={this.fechaInicio}>
+                <Text style={styles.text}> Seleccione la fecha inicio de la incubación </Text>
                 </TouchableOpacity>
                 </View>
 
@@ -154,9 +175,10 @@ class AgregarIncubacion extends React.Component {
                     is24Hour={true}
                 />
 
+{/*               
                 <View style={{alignItems:'center'}}>
-                <Text style={{color:'green', fontSize:20, marginTop:5, marginBottom:5}}> {this.state.fechaElegida}</Text>
-                </View>
+                <Text style={{color:'green', fontSize:20, marginTop:5, marginBottom:5}}> {this.state.fechaInicio}</Text>
+                </View> */}
 
                 <View style={{alignItems:'center'}}>
                 <TouchableOpacity style={styles.botonOk} onPress={this.onPressAgregarIncubacion.bind(this)}>
@@ -189,9 +211,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         // textAlignVertical: 'top'
     },
+    inputTipoAve: {
+        // alignSelf:'center',
+          margin:20,
+         // height: 40,
+         //  marginRight:30,
+         //  marginLeft:30,
+         borderColor: 'rgb(0, 153, 51)',
+         borderWidth: 2,
+         borderRadius:20,
+         paddingHorizontal: 10,
+         // textAlignVertical: 'top'
+     },
     button: {
         alignItems:'center',
-        width: 250,
+        width: 400,
         //height: 50,
         backgroundColor: 'green',
         borderRadius: 30,

@@ -56,7 +56,7 @@ class RegistroUsuarios extends React.Component {
         const{nombre, apellido, email, password1, password2} = this.state; // destructuracion de objetos
 
         var password = password1;
-        
+
         var datos = {'nombre': nombre, 'apellido': apellido, 'email': email, 'password': password}
 
         console.log(datos);

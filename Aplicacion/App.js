@@ -5,6 +5,7 @@ import Login from './vistas/Login';
 import RegistroUsuarios from './vistas/RegistroUsuarios';
 import DashboardPrincipal from './vistas/DashboardPrincipal';
 import AgregarIncubacion from './vistas/AgregarIncubacion';
+//import VerIncubacion from './vistas/VerIncubacion';
 import GestionDispositivos from './vistas/GestionDispositivos';
 import Calendario from './vistas/Calendario';
 
@@ -18,8 +19,9 @@ export default class App extends React.Component {
 
 const AppStackNavigator = createStackNavigator({
 
-    Login: Login,
+   // VerIncubacion: VerIncubacion,
     AgregarIncubacion: AgregarIncubacion,
+    Login: Login,
     Calendario: Calendario,
     Dashboard: DashboardPrincipal,
     Registro: RegistroUsuarios,
