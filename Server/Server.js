@@ -166,16 +166,20 @@ app.post('/registro', urlencodedParser, function(req,res){
 *********************************************** AGREGAR INCUBACION ******************************************
 *************************************************************************************************************/ 
 
-function addDays(myDate,days) {
-  return new Date(myDate.getTime() + days*24*60*60*1000);
-}
+// function addDays(myDate,days) {
+//   return new Date(myDate.getTime() + days*24*60*60*1000);
+// }
 
 Date.prototype.addDays = function(days) {
   var date = new Date(this.valueOf());
   date.setDate(date.getDate() + days);
   return date;
 }
-  
+
+var ID = function () {
+  return '_' + Math.random().toString(36).substr(2, 9);
+}
+
 app.post('/agregarIncubacion', urlencodedParser, function(req,res){
 
 
@@ -194,6 +198,7 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res){
     console.log("diasIncubacion:", diasIncubacion);
     console.log("diaVoltear:", diasVoltear);
 
+    // hacer que el usuario solo pueda ver sus incubadoras
 
     var fechaInicio = new Date(req.body.fechaInicio);
    
@@ -203,8 +208,8 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res){
     console.log("fechaVolteo:", fechaVolteo);
     console.log("fechaFinal:", fechaFin);
 
-
     var datos = {
+      id: idIncubacion,
       nombre: req.body.nombre,
       cantHuevos:req.body.cantHuevos,
       fechaInicio: fechaInicio,
@@ -213,36 +218,48 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res){
       estado: 1,
     }
 
-    con.query('INSERT INTO incubacion SET ?', datos, function (error, results, fields) {
-      if (error) {
-        console.log("\n\nERROR:\n\n", error.code, "\n\n");
-        res.send({
-          mensaje: error
-        })
-      } else {
-        res.send({
-          mensaje: "La incubación se ha creado exitosamente."
-        });
-      }
+   var idIncubacion = new Date().getUTCMilliseconds();
+   console.log("idDispositivo:", idIncubacion);
+
+  });
+
+  con.query('INSERT INTO incubacion SET ?', datos, function (error, results, fields) {
+    if (error) {
+      console.log("\n\nERROR:\n\n", error, "\n\n");
+      res.send({
+        mensaje: error
+      })
+    } else {
+      res.send({
+        mensaje: "La incubación se ha creado exitosamente."
       });
-    
-    });
+    }
+  });
+  
+  var idDispositivo = req.body.idDispositivo;
 
-    // var sql = "INSERT INTO dispositivoIncubacion (idDispositivo) VALUES ?";
-    // var values = req.body.idDispositivo
-    // con.query(sql, [values], function (err, result) {
-    //   if (err) throw err;
-    //   console.log("Number of records inserted: " + result.affectedRows);
-    // });
+  console.log("hola");
 
+  var datos = {
+    idDispositivo: idDispositivo,
+    idIncubacion: idIncubacion
+  }
 
-  // console.log("consulta:", consulta);
-
-  // console.log("\n\nDATOS OBTENIDOS:\n\n", datos, "\n\n");
-
-
+  con.query('INSERT INTO dispositivoIncubacion SET ?', datos,  function (error, results, fields) {
+    if (error) {
+      console.log("\n\nERROR:\n\n", error, "\n\n");
+      // res.send({
+      //   mensaje: error
+      // })
+    } else {
+      // res.send({
+      //   mensaje: "La incubación se ha creado exitosamente."
+      // });
+    }
+  }); 
 
 });
+// });
 
 /************************************************************************************************************
 ******************************************** ENVIO DE DATOS SENSORES ****************************************

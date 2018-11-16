@@ -160,10 +160,10 @@ class AgregarIncubacion extends React.Component {
                     containerStyle = {styles.inputTipoAve}
                 />
                                     
-                <Text style={{}}> Seleccione fecha inicio de la incubación </Text>               
-                <View style={{alignItems:'center'}}>
-                <TouchableOpacity style={styles.input} onPress={this.mostrarCalendario} value={this.fechaInicio}>
-                <Text style={styles.text}> Seleccione la fecha inicio de la incubación </Text>
+                {/* {/* <Text style={{}}> Seleccione fecha inicio de la incubación </Text>                */}
+                <View style={{}}>
+                <TouchableOpacity style={{}} onPress={this.mostrarCalendario}>
+                <Text style={{}}> Seleccione la fecha inicio de la incubación </Text>
                 </TouchableOpacity>
                 </View>
 
@@ -174,11 +174,8 @@ class AgregarIncubacion extends React.Component {
                     mode={'datetime'}
                     is24Hour={true}
                 />
-
-{/*               
-                <View style={{alignItems:'center'}}>
-                <Text style={{color:'green', fontSize:20, marginTop:5, marginBottom:5}}> {this.state.fechaInicio}</Text>
-                </View> */}
+                
+                {/* <Text style={{}}> Fecha asignada: {this.state.fechaInicio}</Text> */}
 
                 <View style={{alignItems:'center'}}>
                 <TouchableOpacity style={styles.botonOk} onPress={this.onPressAgregarIncubacion.bind(this)}>
