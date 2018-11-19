@@ -1,22 +1,16 @@
 import React from 'react';
 import { FlatList, View, Text, Image, TouchableOpacity } from 'react-native';
 import { ListItem, List, Header } from 'react-native-elements';
-
-//import { TextInput } from 'react-native-gesture-handler';
 import styles from '../styles/styles/';
-// import { getToken } from './Utility';
-//import { Button } from 'react-native-elements';
-
 import { Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 class DashboardPrincipal extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            email: this.props.navigation.state.params.email,
-            authorization: this.props.navigation.state.params.authorization,
+            email: 'crherar@gmail.com', //this.props.navigation.state.params.email,
+            //authorization: this.props.navigation.state.params.authorization,
             data:[]
         }
     }
@@ -28,13 +22,16 @@ class DashboardPrincipal extends React.Component {
 
     fetchData = async() => {
 
-        const { email, authorization } = this.state;
+        const { 
+            email, 
+            //authorization 
+        } = this.state;
 
         const response = await fetch("http://192.168.100.5:3000/consultarDispositivos", {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json',
-                'authorization': 'Bearer ' + authorization,
+                //'authorization': 'Bearer ' + authorization,
             },
             body: JSON.stringify({email: email})
         });
@@ -61,15 +58,21 @@ class DashboardPrincipal extends React.Component {
     renderHeader = () => {
         return (
             <Header
+            
+            
             backgroundColor='green'
-                //leftComponent={{ icon: 'menu', color: '#fff' }}
-                centerComponent={{ text: `${this.state.email}`, style: { color: '#fff' } }}
+            //text: `${this.state.email}`
+                leftComponent={{ icon: 'user', type:'font-awesome', color: '#fff' }}
+                centerComponent={{ text: `MIS DISPOSITIVOS`, style: { color: '#fff' } }}
                 //rightComponent={{ icon: 'home', color: '#fff' }}
             />
+            
         );     
     }
 
     render() {
+
+        var email = this.state.email;
 
         return (
 
@@ -79,51 +82,61 @@ class DashboardPrincipal extends React.Component {
                     data={this.state.data}
                     renderItem={({item}) => (
                         <ListItem
-                            onPress={()=>this.props.navigation.navigate('AgregarIncubacion')}
+                            onPress={()=>this.props.navigation.navigate('visualizarDispositivo', {
+                                email:'crherar@gmail.com',
+                                //email: this.props.navigation.state.params.email,
+                                //authorization: this.props.navigation.state.params.authorization,
+                                idDispositivo:item.id,
+                            })}
                             roundAvatar
-                            title={item.nombre}
-                            subtitle={`TEMP:${item.temp} \t HUM:${item.hum} \t CANT:${item.cantidadHuevos} `}
+                            title={`${item.nombre}`}
+                            subtitle={`ID Dispositivo:${item.id}`}// TEMP:${item.temp} \t HUM:${item.hum}`}
                         />
                     )}
                     //ItemSeparatorComponent={this.renderSeparator}
                     ListHeaderComponent={this.renderHeader}
                 />
 
-
-
             </List>
-
-            {/* <Icon
-            raised
-            name='plus'
-            type='antdesign'
-            color='green'
-            size={30}
-            onPress={()=>this.props.navigation.navigate('AgregarIncubacion')} 
-            /> */}
 
             <View style={{alignItems:'center'}}>
                 <Button
-                //style={{ alignItems: 'center', justifyContent:'center' }}
-                title="+ INCUBACIÓN"
-                //loading
-                //loadingProps={{ size: "large", color: "rgba(111, 202, 186, 1)" }}
+                title="+ Agregar Incubación"
                 titleStyle={{ fontWeight: "700" }}
                 buttonStyle={{
-                marginTop:20,
-                justifyContent:'center',
-                backgroundColor: "green",
-                alignItems:"center",
-                width: 200,
-                height: 45,
-                borderColor: "transparent",
-                borderWidth: 0,
-                borderRadius: 5
+                    marginTop:20,
+                    justifyContent:'center',
+                    backgroundColor: "green",
+                    alignItems:"center",
+                    width: 200,
+                    height: 45,
+                    borderColor: "transparent",
+                    borderWidth: 0,
+                    borderRadius: 5
                 }}
                 containerStyle={{ marginTop: 20 }}
                 onPress={()=>this.props.navigation.navigate('AgregarIncubacion')}
                 />
+            </View>
 
+            <View style={{alignItems:'center'}}>
+                <Button
+                title="+ Agregar Dispositivo"
+                titleStyle={{ fontWeight: "700" }}
+                buttonStyle={{
+                    marginTop:20,
+                    justifyContent:'center',
+                    backgroundColor: "green",
+                    alignItems:"center",
+                    width: 200,
+                    height: 45,
+                    borderColor: "transparent",
+                    borderWidth: 0,
+                    borderRadius: 5
+                }}
+                containerStyle={{ marginTop: 20 }}
+                onPress={()=>this.props.navigation.navigate('AgregarDispositivo')}
+                />
             </View>
             
             </View>

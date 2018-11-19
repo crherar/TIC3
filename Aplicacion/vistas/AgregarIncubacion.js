@@ -4,12 +4,12 @@ import {
     View, 
     Text, 
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    Picker
 } from 'react-native';
 
 import { TextInput } from 'react-native-gesture-handler';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import DropdownMenu from 'react-native-dropdown-menu';
 import { Dropdown } from 'react-native-material-dropdown';
 
 
@@ -26,7 +26,9 @@ class AgregarIncubacion extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            idDispositivo:'',
+            email:'crherar@gmail.com',
+            dispositivos: [],
+            dispositivoSeleccionado:'',
             nombre:'',
             cantHuevos:'',
             esVisible: false,
@@ -34,7 +36,6 @@ class AgregarIncubacion extends React.Component {
             tipoAve:''
         };
     }
-
 
     obtenerNombre = (inputNombre) => {
         this.setState({nombre:inputNombre
@@ -66,20 +67,46 @@ class AgregarIncubacion extends React.Component {
         })
     }
 
+    async componentWillMount() {
+
+        const response = await this.fetchData();
+        this.setState({
+            dispositivoSeleccionado: this.state.dispositivos[0]
+          });
+    }
+
+    fetchData = async() => {
+
+        const { email, authorization } = this.state;
+
+        const response = await fetch("http://192.168.100.5:3000/obtenerDispositivos", {
+            method: 'POST',
+            headers: {
+                'Content-Type':'application/json',
+                //'authorization': 'Bearer ' + authorization,
+            },
+            body: JSON.stringify({email: 'crherar@gmail.com'})
+        });
+        const json = await response.json();
+        console.log(json);
+        this.setState({dispositivos: json.datos});
+        console.log(this.state.dispositivos);
+}
 
     onPressAgregarIncubacion() {
 
-        const{idDispositivo, nombre, cantHuevos, fechaInicio, tipoAve } = this.state; // destructuracion de objetos
+        const{ email, dispositivoSeleccionado, nombre, cantHuevos, fechaInicio, tipoAve } = this.state; // destructuracion de objetos
 
         var datos = {
-            idDispositivo: idDispositivo, 
+            email: email,
+            idDispositivo: dispositivoSeleccionado, 
             nombre: nombre, 
             cantHuevos: cantHuevos, 
             tipoAve: tipoAve,
             fechaInicio: fechaInicio
         }
 
-        console.log(datos);
+        console.log("Agregar Incubacion - Datos enviados:", datos);
         
         fetch('http://192.168.100.5:3000/agregarIncubacion', {
             method: 'POST',
@@ -92,18 +119,15 @@ class AgregarIncubacion extends React.Component {
         .catch(error => console.error('Se produjo un error:', error))
         .then(response => {
             console.log('Respuesta del servidor:', response);
-            // if (response.mensaje == 'ER_DUP_ENTRY') {
-            //     alert("Este email ya se encuentra en uso.");
-            // }        
-            // else {
-            //    alert('Usuario registrado existosamente.');
-            // }
         });
     }
 
     render() {
 
-       // var data = [["Pollos", "Pavos", "Patos"]];
+
+        let menuDispositivos = this.state.dispositivos.map( (s, i) => {
+            return <Picker.Item key={i} value={s} label={s} />
+        });
 
         let data = [{
             value: 'Pollos',
@@ -117,18 +141,20 @@ class AgregarIncubacion extends React.Component {
             
         <View style = {styles.container}>
 
+           
             <View style={{alignItems:'center'}}>
                 <Text style={{ fontSize:30, color:'green', fontWeight:'bold',}}> Agregar Incubación </Text>
             </View>
-                <Text style={{}}> Ingrese el ID de la incubadora </Text>
-                <TextInput 
-                style = {styles.input}
-                underlineColorAndroid = "transparent"
-                placeholder = ""
-                placeholderTextColor = "black"
-                onChangeText = {(texto) => this.setState({idDispositivo:texto})}
-                autoCapitalize = "none"
-                />
+
+            <Text>Seleccione la incubadora</Text>
+                <Picker
+                    selectedValue={this.state.dispositivoSeleccionado}
+                    onValueChange={ (opDispositivo) => { this.setState({dispositivoSeleccionado:opDispositivo})}}
+                    onChangeText={ (opDispositivo) => { this.setState({dispositivoSeleccionado:opDispositivo})}}>
+                    {menuDispositivos}
+
+                </Picker>
+
                 <Text style={{}}> Nombre de la incubación </Text>
                 <TextInput 
                 style = {styles.input}
@@ -137,7 +163,6 @@ class AgregarIncubacion extends React.Component {
                 placeholderTextColor = "black"
                 autoCapitalize = "none"
                 onChangeText = {(texto) => this.setState({nombre:texto})}
-                //textoError = {this.state.apellidoError}
                 />
 
                 <Text style={{}}> Cantidad de huevos </Text>
@@ -148,7 +173,6 @@ class AgregarIncubacion extends React.Component {
                 placeholderTextColor = "black"
                 autoCapitalize = "none"
                 onChangeText = {(texto) => this.setState({cantHuevos:texto})}
-                //textoError = {this.state.apellidoError}
                 />
 
                 <Text style={{}}> Seleccione el tipo de ave a incubar </Text>
@@ -160,7 +184,6 @@ class AgregarIncubacion extends React.Component {
                     containerStyle = {styles.inputTipoAve}
                 />
                                     
-                {/* {/* <Text style={{}}> Seleccione fecha inicio de la incubación </Text>                */}
                 <View style={{}}>
                 <TouchableOpacity style={{}} onPress={this.mostrarCalendario}>
                 <Text style={{}}> Seleccione la fecha inicio de la incubación </Text>
@@ -174,8 +197,6 @@ class AgregarIncubacion extends React.Component {
                     mode={'datetime'}
                     is24Hour={true}
                 />
-                
-                {/* <Text style={{}}> Fecha asignada: {this.state.fechaInicio}</Text> */}
 
                 <View style={{alignItems:'center'}}>
                 <TouchableOpacity style={styles.botonOk} onPress={this.onPressAgregarIncubacion.bind(this)}>

@@ -3,6 +3,7 @@ const mysql = require('mysql');
 const jwt = require('jsonwebtoken');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
+var clear = require('clear');
 
 //Crear objeto de conexion
 
@@ -103,23 +104,79 @@ function verificarToken(req, res, next) {
 *********************************************** CONSULTAR DISPOSITIVOS **************************************
 *************************************************************************************************************/ 
 
-app.post('/consultarDispositivos', urlencodedParser, verificarToken, function(req, res) {
+// app.post('/consultarDispositivos', urlencodedParser, verificarToken, function(req, res) {
+
+app.post('/consultarDispositivos', urlencodedParser, function(req, res) {
+
+  console.log("\n\n ---- EJECUTANDO /consultarDispositivos... ----\n");
+
+  console.log("\nDatos obtenidos desde DashboardPrincipal.js:\n\n", req.body, "\n\n");
 
   var email = req.body.email;
 
-  jwt.verify(req.token, 'SecretKey', (err, authData) => {
-    if(err) {
-      console.log(err);
-      console.log(req.token);
-      res.send({
-        code: 403,
-        error: err
-      });
-    } else {
-      con.query('SELECT dispositivos.id, dispositivos.nombre, dispositivos.cantidadHuevos, dispositivos.temp, dispositivos.hum \
+  // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+  //   if(err) {
+  //     console.log(err);
+  //     console.log(req.token);
+  //     res.send({
+  //       code: 403,
+  //       error: err
+  //     });
+  //   } else {
+      con.query('SELECT dispositivos.id, dispositivos.nombre \
              from usuariosDispositivos INNER JOIN usuarios ON usuariosDispositivos.userEmail = usuarios.Email \
              INNER JOIN dispositivos ON usuariosDispositivos.dispositivoId = dispositivos.id \
              WHERE usuarios.email = ?', [email], function(error, results, fields) {   
+              if (error) {
+                res.send({
+                  mensaje: 'Error al consultar los dispositivos.'
+                });
+              } else {
+                res.send({
+                  datos: results
+                });
+              }
+             }
+      );
+  //   }
+  // });
+});
+
+/************************************************************************************************************
+*********************************************** VISUALIZAR DISPOSITIVOS *************************************
+*************************************************************************************************************/ 
+
+
+//app.post('/visualizarDispositivo', urlencodedParser, verificarToken, function(req, res) {
+
+app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
+
+  console.log("\n\n ---- EJECUTANDO /visualizarDispositivo... ----\n");
+
+  console.log("\nDatos obtenidos desde visualizarDispositivo.js:\n\n", req.body, "\n\n");
+
+  var email = req.body.email;
+  var id = req.body.idDispositivo;
+
+  // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+  //   if(err) {
+  //     console.log(err);
+  //     console.log(req.token);
+  //     res.send({
+  //       code: 403,
+  //       error: err
+  //     });
+  //   } else {
+
+      con.query('SELECT incubacion.nombre, \
+                        incubacion.tipoAve, \
+                        incubacion.cantHuevos,\
+                        incubacion.fechaInicio, \
+                        incubacion.fechaFin, \
+                        incubacion.estado \
+                FROM incubacion \
+                INNER JOIN dispositivoIncubacion on incubacion.id = dispositivoIncubacion.idIncubacion \
+                WHERE dispositivoIncubacion.idDispositivo = ? AND dispositivoIncubacion.userEmail = ?', [id, email], function(error, results, fields) {   
               if (error) {
                 res.send(400);
               } else {
@@ -129,8 +186,8 @@ app.post('/consultarDispositivos', urlencodedParser, verificarToken, function(re
               }
              }
       );
-    }
-  });
+  //   }
+  // });
 });
 
 /************************************************************************************************************
@@ -163,12 +220,37 @@ app.post('/registro', urlencodedParser, function(req,res){
 });
 
 /************************************************************************************************************
+*********************************************** OBTENER DISPOSITIVOS ****************************************
+*************************************************************************************************************/
+
+app.post('/obtenerDispositivos', urlencodedParser, function(req, res) {
+
+  console.log("\n\n ---- EJECUTANDO /obtenerDispositivos... ----\n");
+
+  console.log("\nDatos obtenidos desde AgregarDispositivo.js:\n\n", req.body, "\n\n");
+
+  con.query('SELECT dispositivos.id \
+  FROM usuariosDispositivos INNER JOIN usuarios ON usuariosDispositivos.userEmail = usuarios.Email \
+  INNER JOIN dispositivos ON usuariosDispositivos.dispositivoId = dispositivos.id \
+  WHERE usuarios.email = ?', req.body.email, function(error, results, fields) {
+    if (error) {
+      throw error;
+    } else {
+      var dispositivos = [];
+      for (var i = 0; i < results.length; i++) {
+        dispositivos.push(results[i].id.toString());
+    }   
+      console.log(dispositivos);
+      res.send({
+        datos: dispositivos
+      });
+    }
+  });
+});
+
+/************************************************************************************************************
 *********************************************** AGREGAR INCUBACION ******************************************
 *************************************************************************************************************/ 
-
-// function addDays(myDate,days) {
-//   return new Date(myDate.getTime() + days*24*60*60*1000);
-// }
 
 Date.prototype.addDays = function(days) {
   var date = new Date(this.valueOf());
@@ -176,14 +258,10 @@ Date.prototype.addDays = function(days) {
   return date;
 }
 
-var ID = function () {
-  return '_' + Math.random().toString(36).substr(2, 9);
-}
+app.post('/agregarIncubacion', urlencodedParser, function(req,res) {
 
-app.post('/agregarIncubacion', urlencodedParser, function(req,res){
-
-
-  console.log("\n\nDATOS OBTENIDOS:\n\n", req.body, "\n\n");
+  console.log("\n\n ---- EJECUTANDO /agregarIncubacion... ----");
+  console.log("\n\nDatos obtenidos desde AgregarIncubacion.js:\n\n", req.body);
 
   con.query('SELECT ave.id, ave.dias, ave.diaVoltear FROM ave WHERE ave.nombre = ?', [req.body.tipoAve], function (err, result, fields) {
     if (err) throw err;
@@ -195,18 +273,26 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res){
     var diasIncubacion = result[0].dias;
     var diasVoltear = result[0].diaVoltear;
 
+    console.log("\nDatos DB:\n");
+
+    console.log("aveId:", aveId);
     console.log("diasIncubacion:", diasIncubacion);
     console.log("diaVoltear:", diasVoltear);
 
-    // hacer que el usuario solo pueda ver sus incubadoras
+    /* Calculo de las fechas de inicio, de volteo y final en formato DATETIME */
+
+    console.log("\nDatos calculados:\n");
 
     var fechaInicio = new Date(req.body.fechaInicio);
-   
     var fechaVolteo = fechaInicio.addDays(diasVoltear);
     var fechaFin = fechaInicio.addDays(diasIncubacion);
 
     console.log("fechaVolteo:", fechaVolteo);
+    console.log("fechaVolteo:", fechaVolteo);
     console.log("fechaFinal:", fechaFin);
+
+    var idIncubacion = new Date().getUTCMilliseconds();
+    console.log("idIncubacion:", idIncubacion);
 
     var datos = {
       id: idIncubacion,
@@ -218,11 +304,6 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res){
       estado: 1,
     }
 
-   var idIncubacion = new Date().getUTCMilliseconds();
-   console.log("idDispositivo:", idIncubacion);
-
-  });
-
   con.query('INSERT INTO incubacion SET ?', datos, function (error, results, fields) {
     if (error) {
       console.log("\n\nERROR:\n\n", error, "\n\n");
@@ -230,36 +311,73 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res){
         mensaje: error
       })
     } else {
-      res.send({
-        mensaje: "La incubación se ha creado exitosamente."
-      });
+      var idDispositivo = req.body.idDispositivo;
+
+      var datos = {
+        idDispositivo: idDispositivo,
+        idIncubacion: idIncubacion,
+        userEmail: req.body.email,
+      }
+    
+      con.query('INSERT INTO dispositivoIncubacion SET ?', datos,  function (error, results, fields) {
+        if (error) {
+          console.log("\n\nERROR:\n\n", error, "\n\n");
+          res.send({
+            mensaje: error
+          })
+        } else {
+          res.send({
+            mensaje: "La incubación se ha creado exitosamente."
+          });
+        }
+      }); 
     }
   });
-  
-  var idDispositivo = req.body.idDispositivo;
+  });
+});
 
-  console.log("hola");
+/************************************************************************************************************
+*********************************************** AGREGAR DISPOSITIVO ******************************************
+*************************************************************************************************************/ 
 
-  var datos = {
-    idDispositivo: idDispositivo,
-    idIncubacion: idIncubacion
-  }
 
-  con.query('INSERT INTO dispositivoIncubacion SET ?', datos,  function (error, results, fields) {
+app.post('/agregarDispositivo', urlencodedParser, function(req,res) {
+
+  console.log("\n\n ---- EJECUTANDO /agregarDispositivo... ----");
+  console.log("\n\nDatos obtenidos desde AgregarDispositivo.js:\n\n", req.body);
+
+    var datos = {
+      id: req.body.idDispositivo,
+      nombre: req.body.nombre,
+      email: req.body.email
+    }
+
+    con.query('INSERT INTO dispositivos SET id = ?, nombre = ?', [datos.id, datos.nombre], function (error, results, fields) {
     if (error) {
       console.log("\n\nERROR:\n\n", error, "\n\n");
-      // res.send({
-      //   mensaje: error
-      // })
+      res.send({
+        mensaje: "Error al agregar el dispositivo."
+      })
     } else {
-      // res.send({
-      //   mensaje: "La incubación se ha creado exitosamente."
-      // });
-    }
-  }); 
+      con.query('INSERT INTO usuariosDispositivos SET dispositivoId = ?, userEmail = ?', [datos.id, datos.email], function (error, results, fields) {
+        if (error) {
+          console.log("\n\nERROR:\n\n", error, "\n\n");
+          res.send({
+            mensaje: "Error al agregar el dispositivo."
+          })
+        } else {
+          res.send({
+            mensaje: "El dispositivo se ha agregado exitosamente."
+          });
+        }
+      }); 
 
-});
-// });
+    }
+  });
+
+
+  });
+
 
 /************************************************************************************************************
 ******************************************** ENVIO DE DATOS SENSORES ****************************************

@@ -4,9 +4,9 @@ import { createStackNavigator } from 'react-navigation';
 import Login from './vistas/Login';
 import RegistroUsuarios from './vistas/RegistroUsuarios';
 import DashboardPrincipal from './vistas/DashboardPrincipal';
+import AgregarDispositivo from './vistas/AgregarDispositivo';
 import AgregarIncubacion from './vistas/AgregarIncubacion';
-//import VerIncubacion from './vistas/VerIncubacion';
-import GestionDispositivos from './vistas/GestionDispositivos';
+import visualizarDispositivo from './vistas/visualizarDispositivo';
 import Calendario from './vistas/Calendario';
 
 export default class App extends React.Component {
@@ -19,13 +19,13 @@ export default class App extends React.Component {
 
 const AppStackNavigator = createStackNavigator({
 
-   // VerIncubacion: VerIncubacion,
+    Dashboard: DashboardPrincipal,  
+    AgregarDispositivo: AgregarDispositivo,
     AgregarIncubacion: AgregarIncubacion,
-    Login: Login,
+    Login: Login, 
+    visualizarDispositivo: visualizarDispositivo,
     Calendario: Calendario,
-    Dashboard: DashboardPrincipal,
     Registro: RegistroUsuarios,
-    Gestion: GestionDispositivos,
 });
 
 
