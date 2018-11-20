@@ -3,15 +3,18 @@ import { FlatList, View, Text, Image, TouchableOpacity } from 'react-native';
 import { ListItem, List, Header } from 'react-native-elements';
 import styles from '../styles/styles/';
 import { Button } from 'react-native-elements';
+import moment from 'moment';
 
-class visualizarDispositivo extends React.Component {
+
+class visualizarIncubacion extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             email: this.props.navigation.state.params.email,
             //authorization: this.props.navigation.state.params.authorization,
-            idDispositivo:this.props.navigation.state.params.idDispositivo,
+            // email:'crherar@gmail.com',
+            idIncubacion:this.props.navigation.state.params.idIncubacion,
             data:[]
         }
     }
@@ -25,10 +28,10 @@ class visualizarDispositivo extends React.Component {
 
         const { email, 
             //authorization, 
-            idDispositivo 
+            idIncubacion 
         } = this.state;
 
-        const response = await fetch("http://192.168.100.5:3000/visualizarDispositivo", {
+        const response = await fetch("http://192.168.100.5:3000/visualizarIncubacion", {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json',
@@ -36,7 +39,7 @@ class visualizarDispositivo extends React.Component {
             },
             body: JSON.stringify({email: email, 
                 //authorization: authorization, 
-                idDispositivo: idDispositivo})
+                idIncubacion: idIncubacion})
         });
         const json = await response.json();
         console.log(json);
@@ -64,7 +67,7 @@ class visualizarDispositivo extends React.Component {
             backgroundColor='green'
                 leftComponent={{ icon: 'user', type:'font-awesome', color: '#fff' }}
                 //leftComponent={{ icon: 'menu', color: '#fff' }}
-                centerComponent={{ text: `HISTORICO MIS INCUBACIONES`, style: { color: '#fff' } }}
+                centerComponent={{ text: 'DETALLE INCUBACION', style: { color: '#fff' } }}
                 //rightComponent={{ icon: 'home', color: '#fff' }}
             />
         );     
@@ -72,26 +75,31 @@ class visualizarDispositivo extends React.Component {
 
     render() {
 
+        var fechaInicio = moment(this.state.data.fechaInicio).format('DD-MM-YYYY HH:mm');
+        var fechaFin = moment(this.state.data.fechaFin).format('DD-MM-YYYY HH:mm');
+
+
         return (
 
             <View>
             <List>
                 <FlatList
-                    data={this.state.data}
-                    renderItem={({item}) => (
-
-                        
-                        <ListItem
-                            onPress={()=>this.props.navigation.navigate('visualizarIncubacion', {
-                                //email:'crherar@gmail.com',
-                                email: this.props.navigation.state.params.email,
-                                //authorization: this.props.navigation.state.params.authorization,
-                                idIncubacion:item.id,
-                            })}
-                            roundAvatar
-                            title={`Nombre: ${item.nombre}`}
-                            subtitle={`Temperatura: ${item.temperatura} Humedad: ${item.humedad}`}
-                        />
+                    data={this.state.data} 
+                    renderItem={({item}) => ( 
+                        <View>
+                        <Text>ID Incubación: {item.id}</Text>
+                        <Text>Nombre: {item.nombre}</Text>
+                        <Text>Tipo Ave: {item.tipoAve}</Text>
+                        <Text>Cantidad de Huevos: {item.cantHuevos}</Text>
+                        <Text>Fecha Inicio: {moment(item.fechaInicio).format('DD/MM/YYYY --- HH:mm')}</Text>
+                        <Text>Fecha Término: {moment(item.fechaFin).format('DD/MM/YYYY --- HH:mm')}</Text>
+                        <Text>Estado: {item.estado}</Text>
+                        {/* <ListItem
+                             roundAvatar
+                             title={`Nombre: ${item.nombre}`}
+                             subtitle={`Fecha Inicio: ${item.fechaInicio} Fecha Término: ${item.fechaFin} Tipo Ave:${item.tipoAve} Cantidad de Huevos:${item.cantHuevos}`}
+                        /> */}
+                        </View>
                     )}
                     //ItemSeparatorComponent={this.renderSeparator}
                     ListHeaderComponent={this.renderHeader}
@@ -105,4 +113,4 @@ class visualizarDispositivo extends React.Component {
     }   
 }
 
-export default visualizarDispositivo;
+export default visualizarIncubacion;

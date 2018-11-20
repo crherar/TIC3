@@ -155,8 +155,8 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
 
   console.log("\nDatos obtenidos desde visualizarDispositivo.js:\n\n", req.body, "\n\n");
 
-  var email = req.body.email;
   var id = req.body.idDispositivo;
+  var email = req.body.email;
 
   // jwt.verify(req.token, 'SecretKey', (err, authData) => {
   //   if(err) {
@@ -168,12 +168,15 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
   //     });
   //   } else {
 
-      con.query('SELECT incubacion.nombre, \
+      con.query('SELECT incubacion.id, \
+                        incubacion.nombre, \
                         incubacion.tipoAve, \
                         incubacion.cantHuevos,\
                         incubacion.fechaInicio, \
                         incubacion.fechaFin, \
-                        incubacion.estado \
+                        incubacion.estado, \
+                        incubacion.temperatura, \
+                        incubacion.humedad \
                 FROM incubacion \
                 INNER JOIN dispositivoIncubacion on incubacion.id = dispositivoIncubacion.idIncubacion \
                 WHERE dispositivoIncubacion.idDispositivo = ? AND dispositivoIncubacion.userEmail = ?', [id, email], function(error, results, fields) {   
@@ -189,6 +192,63 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
   //   }
   // });
 });
+
+/************************************************************************************************************
+*********************************************** VISUALIZAR DISPOSITIVOS *************************************
+*************************************************************************************************************/ 
+
+
+//app.post('/visualizarDispositivo', urlencodedParser, verificarToken, function(req, res) {
+
+  app.post('/visualizarIncubacion', urlencodedParser, function(req, res) {
+
+    console.log("\n\n ---- EJECUTANDO /visualizarIncubacion... ----\n");
+  
+    console.log("\nDatos obtenidos desde visualizarIncubacion.js:\n\n", req.body, "\n\n");
+  
+    var id = req.body.idIncubacion;
+    var email = req.body.email;
+
+  
+    // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+    //   if(err) {
+    //     console.log(err);
+    //     console.log(req.token);
+    //     res.send({
+    //       code: 403,
+    //       error: err
+    //     });
+    //   } else {
+  
+        con.query('SELECT incubacion.id, \
+                          incubacion.nombre, \
+                          incubacion.tipoAve, \
+                          incubacion.cantHuevos,\
+                          incubacion.fechaInicio, \
+                          incubacion.fechaFin, \
+                          incubacion.estado, \
+                          incubacion.temperatura, \
+                          incubacion.humedad \
+                  FROM incubacion \
+                  INNER JOIN dispositivoIncubacion on incubacion.id = dispositivoIncubacion.idIncubacion \
+                  WHERE dispositivoIncubacion.idIncubacion = ? AND dispositivoIncubacion.userEmail = ?', [id, email], function(error, results, fields) {   
+                if (error) {
+                  res.send(400);
+                } else {
+                  if (results[0].estado == '1') {
+                    results[0].estado = 'Activa';
+                  } else {
+                    results[0].estado = 'Cerrada';
+                  }
+                  res.send({
+                    datos: results
+                  });
+                }
+               }
+        );
+    //   }
+    // });
+  });
 
 /************************************************************************************************************
 *********************************************** REGISTRO DE USUARIO *****************************************
