@@ -173,6 +173,7 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
                         incubacion.tipoAve, \
                         incubacion.cantHuevos,\
                         incubacion.fechaInicio, \
+                        incubacion.fechaVolteo, \
                         incubacion.fechaFin, \
                         incubacion.estado, \
                         incubacion.temperatura, \
@@ -225,6 +226,7 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
                           incubacion.tipoAve, \
                           incubacion.cantHuevos,\
                           incubacion.fechaInicio, \
+                          incubacion.fechaVolteo,\
                           incubacion.fechaFin, \
                           incubacion.estado, \
                           incubacion.temperatura, \
@@ -246,6 +248,126 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
                 }
                }
         );
+    //   }
+    // });
+  });
+
+/************************************************************************************************************
+*********************************************** ELIMINAR INCUBACIÓN *****************************************
+*************************************************************************************************************/ 
+
+
+//app.post('/visualizarDispositivo', urlencodedParser, verificarToken, function(req, res) {
+
+  app.post('/eliminarIncubacion', urlencodedParser, function(req, res) {
+
+    console.log("\n\n ---- EJECUTANDO /eliminarIncubacion... ----\n");
+  
+    console.log("\nDatos obtenidos desde visualizarIncubacion.js:\n\n", req.body, "\n\n");
+  
+    var id = req.body.idIncubacion;
+    var email = req.body.email;
+
+    // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+    //   if(err) {
+    //     console.log(err);
+    //     console.log(req.token);
+    //     res.send({
+    //       code: 403,
+    //       error: err
+    //     });
+    //   } else {
+  
+        con.query('DELETE FROM incubacion WHERE id = ?', [id, email], function(error, results, fields) {   
+                if (error) {
+                  console.log(error);
+                  // res.send({
+                  //   mensaje: "Error al eliminar la incubación."
+                  // });
+                } else {
+                  console.log("Incubación eliminada satisfactoriamente de tabla incubacion...");
+                  // res.send({
+                  //   mensaje: "Incubación eliminada satisfactoriamente."
+                  // });
+                }
+            
+
+            con.query('DELETE FROM dispositivoIncubacion WHERE idIncubacion = ? AND userEmail = ?', [id, email], function(error, results, fields) {   
+              if (error) {
+                console.log(error);
+                res.send({
+                  mensaje: "Error al eliminar la incubación."
+                }) 
+                } else {
+                console.log("Incubación eliminada satisfactoriamente de tabla dispositivoIncubacion...");
+                res.send({
+                  datos: "Incubación eliminada satisfactoriamente."
+                });
+              }
+             }
+            );
+          }
+        );
+    //   }
+    // });
+  });
+
+/************************************************************************************************************
+*********************************************** ELIMINAR DISPOSITIVO ****************************************
+*************************************************************************************************************/ 
+
+
+//app.post('/visualizarDispositivo', urlencodedParser, verificarToken, function(req, res) {
+
+  app.post('/eliminarDispositivo', urlencodedParser, function(req, res) {
+
+    console.log("\n\n ---- EJECUTANDO /eliminarDispositivo... ----\n");
+  
+    console.log("\nDatos obtenidos desde DashboardPrincipal.js:\n\n", req.body, "\n\n");
+  
+    var id = req.body.idIncubacion;
+    var email = req.body.email;
+
+  
+    // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+    //   if(err) {
+    //     console.log(err);
+    //     console.log(req.token);
+    //     res.send({
+    //       code: 403,
+    //       error: err
+    //     });
+    //   } else {
+  
+        con.query('DELETE FROM dispositivo WHERE id = ?', [id, email], function(error, results, fields) {   
+                if (error) {
+                  console.log(error);
+                  // res.send({
+                  //   mensaje: "Error al eliminar el dispositivo."
+                  // });
+                } else {
+                  console.log("Dispositivo eliminado satisfactoriamente.");
+                  // res.send({
+                  //   mensaje: "Dispositivo eliminado satisfactoriamente."
+                  // });
+                }
+       
+
+          con.query('DELETE FROM usuariosDispositivos WHERE idDispositivo = ? AND userEmail = ?', [id, email], function(error, results, fields) {   
+            if (error) {
+              console.log(error);
+              res.send({
+                mensaje: "Error al eliminar el dispositivo."
+              }) 
+              } else {
+              res.send({
+                datos: "Dispositivo eliminado satisfactoriamente."
+              });
+            }
+          }
+          );
+        }
+      );
     //   }
     // });
   });
@@ -359,6 +481,7 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res) {
       nombre: req.body.nombre,
       cantHuevos:req.body.cantHuevos,
       fechaInicio: fechaInicio,
+      fechaVolteo: fechaVolteo,
       fechaFin: fechaFin,
       tipoAve: aveId,
       estado: 1,
