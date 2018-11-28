@@ -12,8 +12,6 @@ import { TextInput } from 'react-native-gesture-handler';
 console.disableYellowBox = true;
 
 
-//import stylesExterno from '../styles/styles/';
-
 class AgregarDispositivo extends React.Component {
 
     constructor(props) {
@@ -22,11 +20,31 @@ class AgregarDispositivo extends React.Component {
             idDispositivo:'',
             nombre:'',
             email:'',
+            validacionID:true,
+            validacionNombre:true,
         };
     }
 
-
     onPressAgregarDispositivo() {
+
+        if(this.state.idDispositivo == ''){
+            this.setState({validacionID:false});
+            alert("El campo de ID no puede estar vacío.");
+            return;
+        } 
+        if (this.state.nombre == '') {
+            this.setState({validacionNombre:false});
+            alert("El campo de nombre no puede estar vacío.");
+            return;
+        } if (this.state.validacionID == false) {
+            this.setState({validacionID:false});
+            alert("El ID solo puede contener números.");
+            return;
+        } if(this.state.validacionNombre == false) {
+            this.setState({validacionNombre:false});
+            alert("Nombre incorrecto, ingrese un nombre válido (alfanumérico).");
+            return;
+        }
 
         const{ idDispositivo, nombre, email} = this.state; // destructuracion de objetos
 
@@ -49,39 +67,78 @@ class AgregarDispositivo extends React.Component {
         .catch(error => console.error('Se produjo un error:', error))
         .then(response => {
             console.log('Respuesta del servidor:', response);
+            if (response.errorCode == 'ER_DUP_ENTRY') {
+                alert("Este ID ya se encuentra en nuestra base de datos.");
+            } else {
+                alert("Dispositivo agregado exitosamente.");
+                this.props.navigation.navigate('Dashboard');
+            }
         });
     }
 
-    render() {
+    validar(text, tipo) {
 
+        if (tipo == 'id'){
+            var reg = /^\d+$/;
+            if (reg.test(text)) {
+                this.setState({validacionID:true, idDispositivo:text});
+            } else if(text == ''){
+                this.setState({validacionID:false, idDispositivo:''});
+            } else {
+                this.setState({validacionID:false, idDispositivo:text});
+            }
+        }
+
+        if (tipo == 'nombre') {
+            var reg = /^[a-z\d\-_\s]+$/i;
+            if (reg.test(text)) {
+                this.setState({validacionNombre:true, nombre:text});
+            } else if(text == ''){
+                this.setState({validacionNombre:false,  nombre:''});
+            } else {
+                this.setState({validacionNombre:false,  nombre:text});
+            }
+        }   
+    }
+
+    render() {
 
         return (
             
         <View style = {styles.container}>
      
             <View style={{alignItems:'center'}}>
-                <Text style={{ fontSize:30, color:'green', fontWeight:'bold',}}> Agregar Dispositivo </Text>
+                <Text style={{ fontSize:30, color:'green', fontWeight:'bold', marginBottom:70}}> Agregar Dispositivo </Text>
             </View>
-
+            
+            <View style={styles.vistaCentrada}>
             <Text style={{}}> Ingrese ID del dispositivo </Text>
-            <TextInput 
-            style = {styles.input}
-            underlineColorAndroid = "transparent"
-            placeholder = ""
-            placeholderTextColor = "black"
-            autoCapitalize = "none"
-            onChangeText = {(id) => this.setState({idDispositivo:id})}
+                <TextInput 
+                style = {[styles.inputID, 
+                    !this.state.validacionID? styles.inputError:null]}
+                underlineColorAndroid = "transparent"
+                placeholder = "Ej:1893"
+                placeholderTextColor = "grey"
+                //autoCapitalize = "none"
+                onChangeText = {(text) => this.validar(text, 'id')}
+                maxLength={4}
             />
 
             <Text style={{}}> Ingrese nombre del dispositivo </Text>
                 <TextInput 
-                style = {styles.input}
+                style = {[styles.inputNombreDispositivo, 
+                    !this.state.validacionNombre? styles.inputError:null]}
                 underlineColorAndroid = "transparent"
-                placeholder = ""
-                placeholderTextColor = "black"
-                autoCapitalize = "none"
-                onChangeText = {(texto) => this.setState({nombre:texto})}
+                placeholder = "Ej: dispositivo nº1"
+                placeholderTextColor = "grey"
+                //autoCapitalize = "none"
+                onChangeText = {(text) => this.validar(text, 'nombre')}
+                maxLength={20}
             />
+
+            {/* <Text>idDispositivo: {this.state.idDispositivo} </Text>
+            <Text>nombre: {this.state.nombre} </Text> */}
+            </View>
 
             <View style={{alignItems:'center'}}>
             <TouchableOpacity style={styles.botonOk} onPress={this.onPressAgregarDispositivo.bind(this)}>
@@ -99,40 +156,39 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:'center',
         flexDirection:'column',
-        //alignItems:'center',
-        backgroundColor:'white'
+        backgroundColor:'white',
     },
-    input: {
-       // alignSelf:'center',
-         margin:20,
-        // height: 40,
-        //  marginRight:30,
-        //  marginLeft:30,
-        borderColor: 'rgb(0, 153, 51)',
+    vistaCentrada: {
+        alignItems:'center'
+    },
+    inputID: {
+        alignItems:'center',
+        textAlign:'center',
+        margin:20,
+        borderColor: 'green',
+        width:180, // Para 4 caracteres usar 55
         borderWidth: 2,
         borderRadius:20,
         paddingHorizontal: 10,
-        // textAlignVertical: 'top'
     },
-    inputTipoAve: {
-        // alignSelf:'center',
-          margin:20,
-         // height: 40,
-         //  marginRight:30,
-         //  marginLeft:30,
-         borderColor: 'rgb(0, 153, 51)',
-         borderWidth: 2,
-         borderRadius:20,
-         paddingHorizontal: 10,
-         // textAlignVertical: 'top'
-     },
+    inputNombreDispositivo: {
+        alignItems:'center',
+        textAlign:'center',
+        margin:20,
+        borderColor: 'green',
+        width:180, // Para 20 caracteres
+        borderWidth: 2,
+        borderRadius:20,
+        paddingHorizontal: 10,
+    },
+    inputError: {
+        borderColor:'red'
+    },
     button: {
         alignItems:'center',
         width: 400,
-        //height: 50,
         backgroundColor: 'green',
         borderRadius: 30,
-        //justifyContent:'center',
         marginTop:15
     },
     text: {
@@ -147,7 +203,7 @@ const styles = StyleSheet.create({
     },
     botonOk: {
         alignItems:'center',
-        // marginTop:30,
+        marginTop:70,
         marginRight:120,
         marginLeft:120,
         paddingTop:10,
@@ -155,7 +211,7 @@ const styles = StyleSheet.create({
         paddingLeft:30,
         paddingRight:30,
         backgroundColor: 'green',
-        borderRadius:5,
+        borderRadius:30,
     },
 });
 

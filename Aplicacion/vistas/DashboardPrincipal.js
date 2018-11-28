@@ -3,10 +3,13 @@ import { FlatList, View, Text, Image, TouchableOpacity } from 'react-native';
 import { ListItem, List, Header } from 'react-native-elements';
 import styles from '../styles/styles/';
 import { Button } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
+
 
 class DashboardPrincipal extends React.Component {
 
     constructor(props) {
+        
         super(props);
         this.state = {
             email: 'crherar@gmail.com', //this.props.navigation.state.params.email,
@@ -20,6 +23,7 @@ class DashboardPrincipal extends React.Component {
         this.fetchData();
     }
 
+
     fetchData = async() => {
 
         const { 
@@ -27,6 +31,7 @@ class DashboardPrincipal extends React.Component {
             //authorization 
         } = this.state;
 
+        
         const response = await fetch("http://192.168.100.5:3000/consultarDispositivos", {
             method: 'POST',
             headers: {
@@ -41,6 +46,8 @@ class DashboardPrincipal extends React.Component {
         console.log(this.state.data); 
 }
 
+ 
+  
     renderSeparator = () => {
         return (
             <View 
@@ -57,16 +64,11 @@ class DashboardPrincipal extends React.Component {
 
     renderHeader = () => {
         return (
-            <Header
-            
-            
+            <Header   
             backgroundColor='green'
-            //text: `${this.state.email}`
-                leftComponent={{ icon: 'user', type:'font-awesome', color: '#fff' }}
-                centerComponent={{ text: `MIS DISPOSITIVOS`, style: { color: '#fff' } }}
-                //rightComponent={{ icon: 'home', color: '#fff' }}
-            />
-            
+            rightComponent={{ icon:'power-off', type:'font-awesome', color: '#fff' }}
+            centerComponent={{ text: `MIS DISPOSITIVOS (${this.state.email})`, style: { color: '#fff', alignItems:'center' }}}      
+            /> 
         );     
     }
 
@@ -112,7 +114,7 @@ class DashboardPrincipal extends React.Component {
                     height: 45,
                     borderColor: "transparent",
                     borderWidth: 0,
-                    borderRadius: 5
+                    borderRadius: 30,
                 }}
                 containerStyle={{ marginTop: 20 }}
                 onPress={()=>this.props.navigation.navigate('AgregarIncubacion')}
@@ -132,7 +134,7 @@ class DashboardPrincipal extends React.Component {
                     height: 45,
                     borderColor: "transparent",
                     borderWidth: 0,
-                    borderRadius: 5
+                    borderRadius: 30,
                 }}
                 containerStyle={{ marginTop: 20 }}
                 onPress={()=>this.props.navigation.navigate('AgregarDispositivo')}

@@ -30,6 +30,8 @@
     "react-native-modal-datetime-picker": "^6.0.0",
     "react-native-push-notification": "^3.1.2",
     "react-native-scrolling-button-menu": "0.0.4",
-    "react-navigation": "^2.14.0"
+    "react-native-slider-button": "^0.1.1",
+    "react-navigation": "^2.14.0",
+    "switch-button-react-native": "^1.0.3"
   }
 }

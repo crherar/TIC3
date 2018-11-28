@@ -323,9 +323,9 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
 
     console.log("\n\n ---- EJECUTANDO /eliminarDispositivo... ----\n");
   
-    console.log("\nDatos obtenidos desde DashboardPrincipal.js:\n\n", req.body, "\n\n");
+    console.log("\nDatos obtenidos desde visualizarDispositivo.js:\n\n", req.body, "\n\n");
   
-    var id = req.body.idIncubacion;
+    var id = req.body.idDispositivo;
     var email = req.body.email;
 
   
@@ -339,7 +339,7 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
     //     });
     //   } else {
   
-        con.query('DELETE FROM dispositivo WHERE id = ?', [id, email], function(error, results, fields) {   
+        con.query('DELETE FROM dispositivos WHERE id = ?', [id, email], function(error, results, fields) {   
                 if (error) {
                   console.log(error);
                   // res.send({
@@ -353,7 +353,7 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
                 }
        
 
-          con.query('DELETE FROM usuariosDispositivos WHERE idDispositivo = ? AND userEmail = ?', [id, email], function(error, results, fields) {   
+          con.query('DELETE FROM usuariosDispositivos WHERE dispositivoId = ? AND userEmail = ?', [id, email], function(error, results, fields) {   
             if (error) {
               console.log(error);
               res.send({
@@ -371,6 +371,34 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
     //   }
     // });
   });
+
+  /************************************************************************************************************
+*********************************************** APAGAR DISPOSITIVO ****************************************
+*************************************************************************************************************/ 
+
+
+//app.post('/visualizarDispositivo', urlencodedParser, verificarToken, function(req, res) {
+
+  app.post('/apagarDispositivo', urlencodedParser, function(req, res) {
+
+    console.log("\n\n ---- EJECUTANDO /apagarDispositivo... ----\n");
+  
+    console.log("\nDatos obtenidos desde visualizarDispositivo.js:\n\n", req.body, "\n\n");
+  
+    // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+    //   if(err) {
+    //     console.log(err);
+    //     console.log(req.token);
+    //     res.send({
+    //       code: 403,
+    //       error: err
+    //     });
+    //   } else {
+  
+    res.send({mensaje:"recibido"});
+
+  });
+
 
 /************************************************************************************************************
 *********************************************** REGISTRO DE USUARIO *****************************************
@@ -506,10 +534,12 @@ app.post('/agregarIncubacion', urlencodedParser, function(req,res) {
         if (error) {
           console.log("\n\nERROR:\n\n", error, "\n\n");
           res.send({
+            code:400,
             mensaje: error
           })
         } else {
           res.send({
+            code:200,
             mensaje: "La incubación se ha creado exitosamente."
           });
         }
@@ -539,17 +569,22 @@ app.post('/agregarDispositivo', urlencodedParser, function(req,res) {
     if (error) {
       console.log("\n\nERROR:\n\n", error, "\n\n");
       res.send({
+        errorCode:error.code,
+        codigo:400,
         mensaje: "Error al agregar el dispositivo."
       })
+      return;
     } else {
       con.query('INSERT INTO usuariosDispositivos SET dispositivoId = ?, userEmail = ?', [datos.id, datos.email], function (error, results, fields) {
         if (error) {
           console.log("\n\nERROR:\n\n", error, "\n\n");
           res.send({
+            codigo: 400,
             mensaje: "Error al agregar el dispositivo."
           })
         } else {
           res.send({
+            code: 200,
             mensaje: "El dispositivo se ha agregado exitosamente."
           });
         }

@@ -3,12 +3,15 @@ import { FlatList, View, Text, Image, TouchableOpacity } from 'react-native';
 import { ListItem, List, Header } from 'react-native-elements';
 import styles from '../styles/styles/';
 import { Button } from 'react-native-elements';
+import MySwitchButton from 'switch-button-react-native';
 
 class visualizarDispositivo extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            apagarDispositivo: '1',
+            estadoDispositivo:'',
             email: this.props.navigation.state.params.email,
             //authorization: this.props.navigation.state.params.authorization,
             idDispositivo:this.props.navigation.state.params.idDispositivo,
@@ -44,6 +47,55 @@ class visualizarDispositivo extends React.Component {
         console.log(this.state.data); 
 }
 
+eliminarDispositivo = async() => {
+
+    const { email, 
+        //authorization, 
+        idDispositivo
+    } = this.state;
+
+    const response = await fetch("http://192.168.100.5:3000/eliminarDispositivo", {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json',
+            //'authorization': 'Bearer ' + authorization,
+        }, 
+        body: JSON.stringify({email: email, 
+        //authorization: authorization, 
+        idDispositivo: idDispositivo
+        })
+    });
+    const json = await response.json();
+    console.log(json);
+}
+
+apagarDispositivo()  { 
+
+    this.setState({estadoDispositivo:'Dispositivo apagado.'});
+    const { email, 
+        //authorization, 
+        idDispositivo,
+        apagarDispositivo
+    } = this.state;
+
+    const response = fetch("http://192.168.100.5:3000/apagarDispositivo", {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json',
+            //'authorization': 'Bearer ' + authorization,
+        }, 
+        body: JSON.stringify({email: email, 
+        //authorization: authorization, 
+        idDispositivo: idDispositivo,
+        apagarDispositivo: apagarDispositivo
+        })
+    });
+    alert("Dispositivo apagado.");
+    this.props.navigation.navigate('Dashboard');
+    // const json = await response.json();
+    // console.log(json);
+}
+
     renderSeparator = () => {
         return (
             <View 
@@ -62,9 +114,9 @@ class visualizarDispositivo extends React.Component {
         return (
             <Header
             backgroundColor='green'
-                leftComponent={{ icon: 'user', type:'font-awesome', color: '#fff' }}
+                rightComponent={{ icon: 'power-off', type:'font-awesome', color: '#fff' }}
                 //leftComponent={{ icon: 'menu', color: '#fff' }}
-                centerComponent={{ text: `HISTORICO MIS INCUBACIONES`, style: { color: '#fff' } }}
+                centerComponent={{ text: `MIS INCUBACIONES (${this.state.email})`, style: { color: '#fff' } }}
                 //rightComponent={{ icon: 'home', color: '#fff' }}
             />
         );     
@@ -98,9 +150,55 @@ class visualizarDispositivo extends React.Component {
                 />
                 
             </List>
-            
+
+
+             <View style={{alignItems:'center'}}>
+                <Button
+                title="[X] Eliminar dispositivo"
+                titleStyle={{ fontWeight: "700", alignItems:'center'}}
+                buttonStyle={{
+                    marginTop:20,
+                    justifyContent:'center',
+                    backgroundColor: "red",
+                    alignItems:"center",
+                    width: 220,
+                    height: 45,
+                    margin:20,
+                    borderColor: "transparent",
+                    borderWidth: 0,
+                    borderRadius: 20
+                }}
+                containerStyle={{ marginTop: 20 }}
+                onPress={this.eliminarDispositivo.bind(this)}
+                />
             </View>
 
+            <View style={{alignItems:'center'}}>
+                <Button
+                title="[X] Apagar Dispositivo"
+                titleStyle={{ fontWeight: "700", alignItems:'center'}}
+                buttonStyle={{
+                    marginTop:20,
+                    justifyContent:'center',
+                    backgroundColor: "red",
+                    alignItems:"center",
+                    width: 220,
+                    height: 45,
+                    margin:20,
+                    borderColor: "transparent",
+                    borderWidth: 0,
+                    borderRadius: 20
+                }}
+                containerStyle={{ marginTop: 20 }}
+                onPress={
+                    this.apagarDispositivo.bind(this)}
+                />
+            </View>
+
+            
+            
+        </View>
+            
         ); 
     }   
 }
