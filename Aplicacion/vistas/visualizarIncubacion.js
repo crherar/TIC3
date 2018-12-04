@@ -90,7 +90,7 @@ class visualizarIncubacion extends React.Component {
             backgroundColor='green'
                 leftComponent={{ icon: 'user', type:'font-awesome', color: '#fff' }}
                 //leftComponent={{ icon: 'menu', color: '#fff' }}
-                centerComponent={{ text: 'DETALLE INCUBACION', style: { color: '#fff' } }}
+                centerComponent={{ text: 'DETALLE INCUBACIÓN', style: { color: '#fff' } }}
                 //rightComponent={{ icon: 'home', color: '#fff' }}
             />
         );     
@@ -123,7 +123,7 @@ class visualizarIncubacion extends React.Component {
                         <Text style={{marginBottom:10, color:'blue', fontWeight:'bold'}}>Humedad: {item.humedad}</Text>
                         <View style={{flex:1, flexDirection:'row', marginTop:10 }}>
                             <View style={styles1.circle1}/>
-                            <Text> Fecha inicio </Text> 
+                            <Text> Fecha Inicio </Text> 
                         </View>
                         <View style={{flex:1, flexDirection:'row' }}>
                             <View style={styles1.circle2}/>

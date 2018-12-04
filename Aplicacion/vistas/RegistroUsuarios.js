@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import styles from '../styles/styles/';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareView } from 'react-native-keyboard-aware-view';
+import { KeyboardAvoidingView } from 'react-native';
+
+
+
 console.disableYellowBox = true;
 
 class RegistroUsuarios extends React.Component {
+  // static navigationOptions = { header: null }
 
     constructor(props) {
         super(props);
@@ -21,7 +28,7 @@ class RegistroUsuarios extends React.Component {
             validacionPassword2:true
         };
     }
-
+    
     onPressRegistrar() {
 
         if(this.state.validacionNombre == false || this.state.nombre == '') {
@@ -143,13 +150,11 @@ class RegistroUsuarios extends React.Component {
     // obtenerPassword = (inputPassword) => this.setState({password:inputPassword});
 
     render() {
+
+        
         return (
-        <View style = {styles.container}>
-
-                {/* <View style={{flex:'1', flexDirection:'column'}}>
-                    <Image source={require('../assets/nace.png')} style={styles.logo}/>
-                </View> */}
-
+            <View style={styles.container}>
+            <KeyboardAvoidingView style={{}} behavior="padding" enabled>
                 <View style={{alignItems:'center'}}>
                     <Text style={{ fontSize:30, color:'green', fontWeight:'bold',}}> Registrar nueva cuenta </Text>
                 </View>
@@ -210,11 +215,15 @@ class RegistroUsuarios extends React.Component {
                 onChangeText={(text) => this.validar(text, 'password2')}
                 //textoError = {this.state.passwordError}
                 />
+
                 <TouchableOpacity style={styles.botonLogin} onPress={this.onPressRegistrar.bind(this)}>
                 <Text style={styles.textoBotonLogin}> CONTINUAR </Text>
                 </TouchableOpacity>
+     
 
-        </View>
+
+      </KeyboardAvoidingView>
+      </View>
         );
     }   
 }

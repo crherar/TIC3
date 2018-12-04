@@ -3,6 +3,8 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { AsyncStorage } from "react-native";
 import styles from '../styles/styles/';
+import { KeyboardAvoidingView } from 'react-native';
+
 console.disableYellowBox = true;
 
 
@@ -10,6 +12,13 @@ console.disableYellowBox = true;
 const ACCESS_TOKEN = 'access_token';
 
 class Login extends React.Component {
+    static navigationOptions = { header: null }
+
+    // static navigationOptions = {
+    //     header: {
+    //        visible: null,
+    //     }
+    //   }
 
     constructor(props) {
         super(props);
@@ -122,8 +131,14 @@ class Login extends React.Component {
 
     render() {
         return (
+
         <View style = {styles.container}>
+
+        <View style={{alignItems:'center'}}>
             <Image source={require('../assets/incubasmart1.png')} style={styles.logo}/>
+        </View>
+        <KeyboardAvoidingView style={{}} behavior="padding" enabled>
+
                 <TextInput
                 style = {[styles.input, 
                     !this.state.validacionEmail? styles.inputError:null]}
@@ -132,6 +147,7 @@ class Login extends React.Component {
                 autoCapitalize = "none"
                 onChangeText={(text) => this.validar(text, 'email')}
                 />
+
                 <TextInput 
                 style = {[styles.input, 
                     !this.state.validacionPassword? styles.inputError:null]}
@@ -141,6 +157,8 @@ class Login extends React.Component {
                 autoCapitalize = "none"
                 onChangeText={(text) => this.validar(text, 'password')}
                 />
+
+
                 <TouchableOpacity style={styles.botonLogin} onPress={this.onPressLogin.bind(this)}>
                 <Text style={styles.textoBotonLogin}> LOGIN </Text>
                 </TouchableOpacity>
@@ -148,7 +166,12 @@ class Login extends React.Component {
                 <TouchableOpacity style={styles.textoNoTienesCuentaAun} onPress={()=>this.props.navigation.navigate('Registro')}>
                 <Text style={styles.textoNoTienesCuentaAun}> ¿No tienes cuenta aún? </Text>
                 </TouchableOpacity>
+
+         </KeyboardAvoidingView>
+
+
         </View>
+
         );
     }   
 }

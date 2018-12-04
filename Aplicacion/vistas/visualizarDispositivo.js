@@ -10,8 +10,6 @@ class visualizarDispositivo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            apagarDispositivo: '1',
-            estadoDispositivo:'',
             email: this.props.navigation.state.params.email,
             //authorization: this.props.navigation.state.params.authorization,
             idDispositivo:this.props.navigation.state.params.idDispositivo,
@@ -75,10 +73,9 @@ apagarDispositivo()  {
     const { email, 
         //authorization, 
         idDispositivo,
-        apagarDispositivo
     } = this.state;
 
-    const response = fetch("http://192.168.100.5:3000/apagarDispositivo", {
+    const response = fetch("http://192.168.100.5:3000/Estado", {
         method: 'POST',
         headers: {
             'Content-Type':'application/json',
@@ -87,7 +84,7 @@ apagarDispositivo()  {
         body: JSON.stringify({email: email, 
         //authorization: authorization, 
         idDispositivo: idDispositivo,
-        apagarDispositivo: apagarDispositivo
+        estado: '0'
         })
     });
     alert("Dispositivo apagado.");
@@ -95,6 +92,33 @@ apagarDispositivo()  {
     // const json = await response.json();
     // console.log(json);
 }
+
+encenderDispositivo()  { 
+
+    //this.setState({estadoDispositivo:'Dispositivo apagado.'});
+    const { email, 
+        //authorization, 
+        idDispositivo,
+    } = this.state;
+
+    const response = fetch("http://192.168.100.5:3000/Estado", {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json',
+            //'authorization': 'Bearer ' + authorization,
+        }, 
+        body: JSON.stringify({email: email, 
+        //authorization: authorization, 
+        idDispositivo: idDispositivo,
+        estado: '1'
+        })
+    });
+    alert("Dispositivo encendido.");
+    this.props.navigation.navigate('Dashboard');
+    // const json = await response.json();
+    // console.log(json);
+}
+
 
     renderSeparator = () => {
         return (
@@ -175,7 +199,7 @@ apagarDispositivo()  {
 
             <View style={{alignItems:'center'}}>
                 <Button
-                title="[X] Apagar Dispositivo"
+                title="Apagar Dispositivo"
                 titleStyle={{ fontWeight: "700", alignItems:'center'}}
                 buttonStyle={{
                     marginTop:20,
@@ -195,6 +219,27 @@ apagarDispositivo()  {
                 />
             </View>
 
+            <View style={{alignItems:'center'}}>
+                <Button
+                title="Encender Dispositivo"
+                titleStyle={{ fontWeight: "700", alignItems:'center'}}
+                buttonStyle={{
+                    marginTop:20,
+                    justifyContent:'center',
+                    backgroundColor: "green",
+                    alignItems:"center",
+                    width: 220,
+                    height: 45,
+                    margin:20,
+                    borderColor: "transparent",
+                    borderWidth: 0,
+                    borderRadius: 20
+                }}
+                containerStyle={{ marginTop: 20 }}
+                onPress={
+                    this.encenderDispositivo.bind(this)}
+                />
+            </View>
             
             
         </View>

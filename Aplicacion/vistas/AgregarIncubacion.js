@@ -143,7 +143,7 @@ class AgregarIncubacion extends React.Component {
 
         console.log("Agregar Incubacion - Datos enviados:", datos);
         
-        fetch('http://192.168.100.5:3000/agregarIncubacion', {
+        fetch('http://192.168.0.5:3000/agregarIncubacion', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

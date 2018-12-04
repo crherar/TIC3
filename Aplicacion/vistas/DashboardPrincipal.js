@@ -12,7 +12,7 @@ class DashboardPrincipal extends React.Component {
         
         super(props);
         this.state = {
-            email: 'crherar@gmail.com', //this.props.navigation.state.params.email,
+            email: 'crherar@gmail.com',
             //authorization: this.props.navigation.state.params.authorization,
             data:[]
         }

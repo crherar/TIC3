@@ -7,6 +7,7 @@ import {
     StyleSheet,
 } from 'react-native';
 
+import { KeyboardAvoidingView } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
 console.disableYellowBox = true;
@@ -107,6 +108,8 @@ class AgregarDispositivo extends React.Component {
             
         <View style = {styles.container}>
      
+            <KeyboardAvoidingView style={{}} behavior="padding" enabled>
+
             <View style={{alignItems:'center'}}>
                 <Text style={{ fontSize:30, color:'green', fontWeight:'bold', marginBottom:70}}> Agregar Dispositivo </Text>
             </View>
@@ -145,7 +148,8 @@ class AgregarDispositivo extends React.Component {
                 <Text style={styles.textoBotonOk}> OK </Text>
             </TouchableOpacity>
             </View>
-                
+            </KeyboardAvoidingView>
+            
         </View>
         );
     }   

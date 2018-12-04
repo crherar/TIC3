@@ -372,7 +372,109 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
     // });
   });
 
-  /************************************************************************************************************
+/************************************************************************************************************
+*********************************************** APAGAR DISPOSITIVO ****************************************
+*************************************************************************************************************/ 
+
+
+//app.post('/visualizarDispositivo', urlencodedParser, verificarToken, function(req, res) {
+
+  app.post('/Estado', urlencodedParser, function(req, res) {
+
+    console.log("\n\n ---- EJECUTANDO /Estado... ----\n");
+  
+    console.log("\nDatos obtenidos desde visualizarDispositivo.js:\n\n", req.body, "\n\n");
+  
+    // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+    //   if(err) {
+    //     console.log(err);
+    //     console.log(req.token);
+    //     res.send({
+    //       code: 403,
+    //       error: err
+    //     });
+    //   } else {
+  
+    var datos = {
+      id: req.body.idDispositivo,
+      estado: req.body.estado,
+    }
+
+    con.query('UPDATE dispositivos SET estado=? WHERE id=?', [datos.estado, datos.id], function (error, results, fields) {
+      if (error) {
+        console.log("\n\nERROR:\n\n", error, "\n\n");
+        res.send({
+          mensaje: error.code
+        })
+      } else {
+        if (datos.estado == '1') {
+            var codigo = datos.estado;
+            var mensaje = "Dispositivo encendido - seteado a 1."
+          } else if (datos.estado == '0') {
+            var codigo  = datos.estado;
+            var mensaje = "Dispositivo apagado - seteado a 0."
+        }
+        res.send({
+          codigo: datos.estado,
+          mensaje: mensaje
+        })
+      }
+      });
+
+  });
+
+/************************************************************************************************************
+*********************************************** APAGAR DISPOSITIVO ****************************************
+*************************************************************************************************************/ 
+
+
+//app.post('/visualizarDispositivo', urlencodedParser, verificarToken, function(req, res) {
+
+  app.get('/EstadoLeer', urlencodedParser, function(req, res) {
+
+    console.log("\n\n ---- EJECUTANDO /EstadoLeer... ----\n");
+  
+    console.log("\nDatos obtenidos desde Raspberry:\n\n", req.body, "\n\n");
+  
+    // jwt.verify(req.token, 'SecretKey', (err, authData) => {
+    //   if(err) {
+    //     console.log(err);
+    //     console.log(req.token);
+    //     res.send({
+    //       code: 403,
+    //       error: err
+    //     });
+    //   } else {
+  
+    var datos = {
+      id: req.body.id,
+    }
+
+    con.query('SELECT estado FROM dispositivos WHERE id = ?', [datos.id], function (error, results, fields) {
+      if (error) {
+        console.log("\n\nERROR:\n\n", error, "\n\n");
+        res.send({
+          mensaje: error.code
+        })
+      } else {
+        if (datos.estado == '1') {
+            //var codigo = datos.estado;
+            var mensaje = "Dispositivo encendido - seteado a 1."
+          } else if (datos.estado == '0') {
+            //var codigo  = datos.estado;
+            var mensaje = "Dispositivo apagado - seteado a 0."
+        }
+        res.send({
+          codigo: results[0].estado,
+          mensaje: mensaje
+        })
+      }
+      });
+
+  });
+  
+
+/************************************************************************************************************
 *********************************************** APAGAR DISPOSITIVO ****************************************
 *************************************************************************************************************/ 
 
@@ -396,6 +498,19 @@ app.post('/visualizarDispositivo', urlencodedParser, function(req, res) {
     //   } else {
   
     res.send({mensaje:"recibido"});
+
+    con.query('INSERT INTO usuarios SET ?', datos, function (error, results, fields) {
+      if (error) {
+        console.log("\n\nERROR:\n\n", error.code, "\n\n");
+        res.send({
+          mensaje: error.code
+        })
+      } else {
+        res.send({
+          mensaje: "El usuario se ha creado exitosamente."
+        });
+      }
+      });
 
   });
 
@@ -602,22 +717,40 @@ app.post('/agregarDispositivo', urlencodedParser, function(req,res) {
 *************************************************************************************************************/ 
 
 app.post('/datosSensores', urlencodedParser, function (req, res) {
-  console.log("Temperatura: " + req.body['temp']);
-  console.log("Humedad: " + req.body['hum']);
-  console.log(req.body);
-  if (!req.body) return res.sendStatus(400);
 
-  var datos = req.body;
-  console.log("datos:", datos);
-  res.send('Los datos han sido recibidos por el servidor.');
+  console.log('datos recibidos:', req.body)
 
-  var sql = "UPDATE dispositivos SET temp='" + req.body['temp'] + "', hum='" + req.body['hum'] + "' WHERE id='123'";
+  var datos = {
+    id: req.body.id,
+    temperatura: req.body.temperatura,
+    humedad: req.body.humedad
+  }
 
-                             con.query(sql, function (err, result) {
-                               if (err) throw err;
-                               console.log("Numero de filas afectadas: " + result.affectedRows);
-                             });
+con.query('SELECT idIncubacion FROM dispositivoIncubacion WHERE idDispositivo=?', [datos.id], function (error, results, fields) {
+  if (error) {
+    console.log("\n\nERROR select:\n\n", error, "\n\n");
+    res.send({
+      mensaje:error
+    });
+  } else {
+    console.log("idIncubacion: ", results[0].idIncubacion);
+    var idIncubacion = results[0].idIncubacion;
+    con.query('UPDATE incubacion SET temperatura=?, humedad=? WHERE id=?', [datos.temperatura, datos.humedad, idIncubacion], function (error, results, fields) {
+      if (error) {
+        console.log("\n\nERROR incubacion:\n\n", error, "\n\n");
+        res.send({
+          mensaje: error
+        })
+      } else {
+        res.send({
+          mensaje: 'Datos escritos en la base de datos.'
+        })
+      }
+      });
+  }
 });
+});
+
 
 app.listen(port='3000', () => {
   console.log("Servidor corriendo en puerto", port);

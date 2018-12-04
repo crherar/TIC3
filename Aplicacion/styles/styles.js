@@ -4,17 +4,16 @@ export default styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection:'column',
-        justifyContent:'space-around',
+        justifyContent:'center',
         backgroundColor:'white',
     },
     logo: {
-        marginTop:0,
-        width: 160, 
-        height: 250,
-        marginLeft:130,
+        width: 130, 
+        height: 220,
+        marginBottom:20,
     },
     input: {
-        margin:-20,
+        margin:10,
         height: 40,
         marginRight:30,
         marginLeft:30,
@@ -28,7 +27,7 @@ export default styles = StyleSheet.create({
     },
     botonLogin: {
         alignItems:'center',
-        // marginTop:30,
+        marginTop:20,
         marginRight:120,
         marginLeft:120,
         paddingTop:10,
@@ -47,6 +46,7 @@ export default styles = StyleSheet.create({
         borderRadius: 5
     },
     textoNoTienesCuentaAun: {
+        marginTop:20,
         color: 'green',
         fontWeight:'bold',
         borderRadius: 5,
